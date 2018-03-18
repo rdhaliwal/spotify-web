@@ -1,3 +1,5 @@
+const changeCaseObject = require('change-case-object');
+
 const parseJsonResponse = (response) => {
   let json = response.json();
 
@@ -7,6 +9,10 @@ const parseJsonResponse = (response) => {
     // Reject the promise if the response is a 500
     return json.then(err => {throw err;});
   }
+};
+
+const convertCases = (json) => {
+  return changeCaseObject.camelCase(json);
 };
 
 const fetchAllPlaylists = (accessToken) => {
@@ -22,7 +28,9 @@ const fetchAllPlaylists = (accessToken) => {
     }
   };
 
-  return fetch(url, GET_HEADER).then(response => parseJsonResponse(response));
+  return fetch(url, GET_HEADER)
+    .then(response => parseJsonResponse(response))
+    .then(json => convertCases(json));
 };
 
 const fetchPlaylistDetails = (playlist, accessToken) => {
@@ -37,7 +45,9 @@ const fetchPlaylistDetails = (playlist, accessToken) => {
     }
   };
 
-  return fetch(url, GET_HEADER).then(response => parseJsonResponse(response));
+  return fetch(url, GET_HEADER)
+    .then(response => parseJsonResponse(response))
+    .then(json => convertCases(json));
 };
 
 export const fetchSongs = async (accessToken) => {

@@ -12,15 +12,15 @@ const SongImage = ({images, name}) => {
   }
 };
 
-export const TrackCard = ({is_local, track}) => {
-  if (is_local) {
+export const TrackCard = ({isLocal, track}) => {
+  if (isLocal) {
     return null;
   } else {
     return (
       <div>
         <SongImage {...track.album}/>
         <audio controls>
-          <source type="audio/mpeg" src={track.preview_url}/>
+          <source type="audio/mpeg" src={track.previewUrl}/>
           Audio tag not supported
         </audio>
         <p> {track.name} </p>
