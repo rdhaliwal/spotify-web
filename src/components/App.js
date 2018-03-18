@@ -1,5 +1,8 @@
 import React from 'react';
 import '../styles/App.css';
+import { connect } from 'react-redux'
+import { savePlaylist } from '../actions/playlists.js'
+
 import { getAccessToken } from '../lib/authentication.js';
 import { fetchSongs } from '../lib/fetchPlaylistAndSongs.js';
 import { TrackCard } from './TrackCard.js';
@@ -19,6 +22,7 @@ class App extends React.Component {
   async componentDidMount() {
     if (this.state.accessToken !== null) {
       let songs = await fetchSongs(this.state.accessToken);
+      this.props.savePlaylist(songs);
       this.setState({songs});
     }
   }
@@ -43,4 +47,17 @@ class App extends React.Component {
   }
 }
 
-export default App;
+
+const mapStateToProps = state => ({
+  playlists: state.playlists
+})
+
+const mapDispatchToProps = dispatch => ({
+  savePlaylist: playlists => dispatch(savePlaylist(playlists))
+})
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App)
+

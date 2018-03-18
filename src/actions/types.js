@@ -1,0 +1,3 @@
+export const ACTION_TYPES = {
+  SAVE_PLAYLIST: 'SAVE_PLAYLIST'
+};
