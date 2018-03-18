@@ -1,5 +1,5 @@
 import React from 'react';
-import '../App.css';
+import '../styles/App.css';
 import { getAccessToken } from '../lib/authentication.js';
 import { fetchSongs } from '../lib/fetchPlaylistAndSongs.js';
 import { TrackCard } from './TrackCard.js';
