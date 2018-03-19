@@ -14,3 +14,8 @@ export const fetchAllPlaylists = (dispatch) => {
     });
 };
 
+export const setActivePlaylist = (playlist) => ({
+  type: ACTION.PLAYLISTS_SELECT,
+  playlist: playlist
+});
+

@@ -2,8 +2,10 @@ import React from 'react';
 import '../styles/App.css';
 import { connect } from 'react-redux'
 
-import { fetchAllPlaylists } from '../actions/playlists.js';
+import { fetchAllPlaylists, setActivePlaylist } from '../actions/playlists.js';
 import { fetchTracks } from '../actions/tracks.js';
+
+import Playlist from './Playlist.js';
 
 class App extends React.Component {
   componentDidMount() {
@@ -11,7 +13,10 @@ class App extends React.Component {
   }
 
   render() {
-    let { loadingStatus, allPlaylists } = this.props.playlists;
+    let {
+      loadingStatus, allPlaylists,
+      activePlaylist
+    } = this.props.playlists;
 
     return (
       <div className="App">
@@ -19,10 +24,29 @@ class App extends React.Component {
         <hr />
         <div>
           Load playlists: {loadingStatus}
-
+          <hr />
+        </div>
+        <div>
+          Active playlist:
+          {
+            Object.keys(activePlaylist).length > 0 ?
+              activePlaylist.name :
+              'No active playlist'
+          }
+          <hr />
+        </div>
+        <div>
+          All playlists
+          <hr />
           {
             allPlaylists.length > 0 &&
-            allPlaylists.map((playlist, index) => <li key={`song-${index}`}>{playlist.name}</li>)
+            allPlaylists.map((playlist) =>
+              <Playlist
+                key={`playlist-${playlist.id}`}
+                playlist={playlist}
+                setActivePlaylist={this.props.setActivePlaylist}
+                />
+            )
           }
         </div>
       </div>
@@ -38,6 +62,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   fetchAllPlaylists: () => fetchAllPlaylists(dispatch),
   fetchTracks: () => fetchTracks(dispatch),
+  setActivePlaylist: (playlist) => dispatch(setActivePlaylist(playlist)),
 });
 
 export default connect(
