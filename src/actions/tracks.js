@@ -1,3 +1,5 @@
+import { ACTION_TYPES } from './types.js';
+
 const changeCaseObject = require('change-case-object');
 
 const parseJsonResponse = (response) => {
@@ -50,8 +52,16 @@ const fetchPlaylistDetails = (playlist, accessToken) => {
     .then(json => convertCases(json));
 };
 
-export const fetchSongs = async (accessToken) => {
-  let playlists = await fetchAllPlaylists(accessToken);
-  let the_playlist = await fetchPlaylistDetails(playlists.items[0], accessToken);
-  return the_playlist.tracks.items;
+
+export const saveTracks = (tracks) => ({
+  type: ACTION_TYPES.SAVE_TRACKS,
+  tracks: tracks
+});
+
+export const fetchTracks = (dispatch, accessToken) => {
+  fetchAllPlaylists(accessToken).then(playlists => {
+    return fetchPlaylistDetails(playlists.items[0], accessToken);
+  }).then(playlist => {
+    dispatch(saveTracks(playlist.tracks.items));
+  });
 }

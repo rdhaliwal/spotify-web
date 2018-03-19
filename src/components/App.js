@@ -1,10 +1,9 @@
 import React from 'react';
 import '../styles/App.css';
 import { connect } from 'react-redux'
-import { savePlaylist } from '../actions/playlists.js'
 
 import { getAccessToken } from '../lib/authentication.js';
-import { fetchSongs } from '../lib/fetchPlaylistAndSongs.js';
+import { fetchTracks } from '../actions/tracks.js';
 import { TrackCard } from './TrackCard.js';
 
 class App extends React.Component {
@@ -19,11 +18,9 @@ class App extends React.Component {
     };
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     if (this.state.accessToken !== null) {
-      let songs = await fetchSongs(this.state.accessToken);
-      this.props.savePlaylist(songs);
-      this.setState({songs});
+      this.props.fetchTracks(this.state.accessToken);
     }
   }
 
@@ -38,8 +35,8 @@ class App extends React.Component {
         <div>
           Songs:
           {
-            this.state.songs.length > 0 &&
-            this.state.songs.map((song, index) => <TrackCard {...song} key={`song-${index}`} />)
+            this.props.tracks.length > 0 &&
+            this.props.tracks.map((track, index) => <TrackCard {...track} key={`song-${index}`} />)
           }
         </div>
       </div>
@@ -48,13 +45,13 @@ class App extends React.Component {
 }
 
 
-const mapStateToProps = state => ({
-  playlists: state.playlists
-})
+const mapStateToProps = (state) => ({
+  tracks: state.tracks
+});
 
-const mapDispatchToProps = dispatch => ({
-  savePlaylist: playlists => dispatch(savePlaylist(playlists))
-})
+const mapDispatchToProps = (dispatch) => ({
+  fetchTracks: token => fetchTracks(dispatch, token),
+});
 
 export default connect(
   mapStateToProps,
