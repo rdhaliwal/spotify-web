@@ -6,19 +6,9 @@ let initialState = {
   activePlaylist: {},
 };
 
-const beginLoadingPlaylist = (state) => ({
+const setPlaylistLoadingStatus = (state, loadingStatus) => ({
   ...state,
-  loadingStatus: LOADING.IN_PROGRESS,
-});
-
-const successfullyLoadedPlaylist = (state) => ({
-  ...state,
-  loadingStatus: LOADING.SUCCESS,
-});
-
-const errorLoadingPlaylist = (state) => ({
-  ...state,
-  loadingStatus: LOADING.ERROR
+  loadingStatus: loadingStatus,
 });
 
 const savePlaylists = (state, playlists) => ({
@@ -34,14 +24,8 @@ const setActivePlaylist = (state, playlist) => ({
 export const playlists = (state = initialState, action) => {
   switch (action.type) {
 
-    case ACTION.PLAYLISTS_LOAD_BEGIN:
-      return beginLoadingPlaylist(state);
-
-    case ACTION.PLAYLISTS_LOAD_SUCCESSFUL:
-      return successfullyLoadedPlaylist(state);
-
-    case ACTION.PLAYLISTS_LOAD_ERROR:
-      return errorLoadingPlaylist(state);
+    case ACTION.SET_PLAYLISTS_LOADING_STATUS:
+      return setPlaylistLoadingStatus(state, action.loadingStatus);
 
     case ACTION.PLAYLISTS_SAVE:
       return savePlaylists(state, action.playlists);
@@ -54,4 +38,12 @@ export const playlists = (state = initialState, action) => {
   }
 };
 
+
+// const setPlaylistTracksLoadingStatus = (state, playlist, loadingStatus) => ({
+//   ...playlist,
+//   playlist.loadingStatus: LOADING.IN_PROGRESS,
+// });
+
+    // case ACTION.SET_PLAYLIST_TRACKS_LOADING_STATUS:
+    //   return setPlaylistTracksLoadState(state, action.playlist, action.loadingStatus);
 

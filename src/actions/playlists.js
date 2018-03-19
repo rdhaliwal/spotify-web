@@ -1,16 +1,24 @@
 import { API } from '../lib/api.js';
-import { ACTION } from './types.js';
+import { ACTION, LOADING } from './types.js';
+
+const playlistStatus = (loadingStatus) => ({
+  loadingStatus: loadingStatus,
+  type: ACTION.SET_PLAYLISTS_LOADING_STATUS,
+});
 
 export const fetchAllPlaylists = (dispatch) => {
-  dispatch({type: ACTION.PLAYLISTS_LOAD_BEGIN});
+  dispatch(playlistStatus(LOADING.IN_PROGRESS));
 
   return API.fetchAllPlaylists()
     .then((playlists) => {
-      dispatch({type: ACTION.PLAYLISTS_LOAD_SUCCESSFUL});
-      dispatch({type: ACTION.PLAYLISTS_SAVE, playlists: playlists.items});
+      dispatch(playlistStatus(LOADING.SUCCESS));
+      dispatch({
+        type: ACTION.PLAYLISTS_SAVE,
+        playlists: playlists.items
+      });
     }).catch(err => {
       console.error(err);
-      dispatch({type: ACTION.PLAYLISTS_LOAD_ERROR});
+      dispatch(playlistStatus(LOADING.ERROR));
     });
 };
 

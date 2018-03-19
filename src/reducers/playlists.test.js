@@ -15,79 +15,68 @@ beforeEach(() => {
   };
 });
 
-it('returns the intial state', () => {
-  let result = playlists(initialState, {type: null});
 
-  expect(result).toEqual(initialState);
+describe('initial state', () => {
+  it('returns the intial state', () => {
+    let result = playlists(initialState, {type: null});
+
+    expect(result).toEqual(initialState);
+  });
 });
 
-it('sets the in progress loading status', () => {
-  let expectedResult = {
-    loadingStatus: LOADING.IN_PROGRESS,
-    allPlaylists: [],
-    activePlaylist: {},
-  };
+describe('all playlists', () => {
 
-  let result = playlists(initialState, {type: ACTION.PLAYLISTS_LOAD_BEGIN});
+ it('sets the playlists loading status', () => {
+    let expectedResult = {
+      loadingStatus: LOADING.SUCCESS,
+      allPlaylists: [],
+      activePlaylist: {},
+    };
 
-  expect(result).toEqual(expectedResult);
-});
+    let result = playlists(initialState, {
+      type: ACTION.SET_PLAYLISTS_LOADING_STATUS,
+      loadingStatus: LOADING.SUCCESS
+    });
 
-it('sets the successful loading status', () => {
-  let expectedResult = {
-    loadingStatus: LOADING.SUCCESS,
-    allPlaylists: [],
-    activePlaylist: {},
-  };
-
-  let result = playlists(initialState, {type: ACTION.PLAYLISTS_LOAD_SUCCESSFUL});
-
-  expect(result).toEqual(expectedResult);
-});
-
-it('sets the error loading status', () => {
-  let expectedResult = {
-    loadingStatus: LOADING.ERROR,
-    allPlaylists: [],
-    activePlaylist: {},
-  };
-
-  let result = playlists(initialState, {type: ACTION.PLAYLISTS_LOAD_ERROR});
-
-  expect(result).toEqual(expectedResult);
-});
-
-it('saves all the playlists', () => {
-  let expectedResult = {
-    loadingStatus: LOADING.READY,
-    allPlaylists: ['harry', 'potter'],
-    activePlaylist: {},
-  };
-
-  let result = playlists(initialState, {
-    type: ACTION.PLAYLISTS_SAVE,
-    playlists: ['harry', 'potter']
+    expect(result).toEqual(expectedResult);
   });
 
-  expect(result).toEqual(expectedResult);
-});
+  it('saves all the playlists', () => {
+    let expectedResult = {
+      loadingStatus: LOADING.READY,
+      allPlaylists: ['harry', 'potter'],
+      activePlaylist: {},
+    };
 
-it('sets a new active playlist', () => {
-  let expectedResult = {
-    loadingStatus: LOADING.READY,
-    allPlaylists: [],
-    activePlaylist: {
-      name: `Yer a wizard, 'arry`
-    }
-  };
+    let result = playlists(initialState, {
+      type: ACTION.PLAYLISTS_SAVE,
+      playlists: ['harry', 'potter']
+    });
 
-  let result = playlists(initialState, {
-    type: ACTION.PLAYLISTS_SELECT,
-    playlist: {
-      name: `Yer a wizard, 'arry`
-    }
+    expect(result).toEqual(expectedResult);
   });
 
-  expect(result).toEqual(expectedResult);
 });
 
+describe('active playlists', () => {
+
+  it('sets a new active playlist', () => {
+    let expectedResult = {
+      loadingStatus: LOADING.READY,
+      allPlaylists: [],
+      activePlaylist: {
+        name: `Yer a wizard, 'arry`
+      }
+    };
+
+    let result = playlists(initialState, {
+      type: ACTION.PLAYLISTS_SELECT,
+      playlist: {
+        name: `Yer a wizard, 'arry`
+      }
+    });
+
+    expect(result).toEqual(expectedResult);
+  });
+
+});
