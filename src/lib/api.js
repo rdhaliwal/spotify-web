@@ -1,7 +1,8 @@
 import { getAccessToken } from './authentication.js';
 const ChangeCase = require('change-case-object');
 
-const ACCESS_TOKEN = getAccessToken(); // Ideally we'd just inject this via the server.
+// Ideally we'd just inject this via the server.
+const ACCESS_TOKEN = getAccessToken();
 const API_ENDPOINT = `https://api.spotify.com/v1`;
 const GET_HEADER = {
   method: 'GET',
@@ -23,10 +24,6 @@ const parseJsonResponse = (response) => {
   }
 };
 
-const convertCases = (json) => {
-  return ChangeCase.camelCase(json);
-};
-
 // Actual API Calls
 // =========================================
 
@@ -35,10 +32,17 @@ const fetchAllPlaylists = () => {
 
   return fetch(url, GET_HEADER)
     .then(response => parseJsonResponse(response))
-    .then(json => convertCases(json))
+    .then(json => ChangeCase.camelCase(json))
+};
+
+const fetchTracksForPlaylist = (url) => {
+  return fetch(url, GET_HEADER)
+    .then(response => parseJsonResponse(response))
+    .then(json => ChangeCase.camelCase(json))
 };
 
 
 export const API = {
-  fetchAllPlaylists
+  fetchAllPlaylists,
+  fetchTracksForPlaylist,
 };

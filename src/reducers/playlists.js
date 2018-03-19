@@ -21,6 +21,34 @@ const setActivePlaylist = (state, playlist) => ({
   activePlaylist: playlist
 });
 
+const setPlaylistTracksLoadingStatus = (state, playlist, loadingStatus) => {
+  let newState = {...state};
+  let newPlaylist = {...newState.allPlaylists.find(p => p.id === playlist.id)};
+
+  newPlaylist.loadingStatus = loadingStatus;
+  if (newPlaylist.id === newState.activePlaylist.id) {
+    newState.activePlaylist = newPlaylist;
+  }
+
+  return newState;
+};
+
+const savePlaylistTracks = (state, playlist, tracks, loadingStatus) => {
+  let newState = {...state};
+  let newPlaylist = {...newState.allPlaylists.find(p => p.id === playlist.id)};
+
+  newPlaylist.tracks = tracks;
+  newPlaylist.loadingStatus = loadingStatus;
+  if (newPlaylist.id === newState.activePlaylist.id) {
+    newState.activePlaylist = newPlaylist;
+  }
+
+  newState.allPlaylists = newState.allPlaylists.map(p => {
+    return p.id === newPlaylist.id ? newPlaylist : p
+  });
+  return newState;
+};
+
 export const playlists = (state = initialState, action) => {
   switch (action.type) {
 
@@ -33,17 +61,13 @@ export const playlists = (state = initialState, action) => {
     case ACTION.PLAYLISTS_SELECT:
       return setActivePlaylist(state, action.playlist);
 
+    case ACTION.SET_PLAYLIST_TRACKS_LOADING_STATUS:
+      return setPlaylistTracksLoadingStatus(state, action.playlist, action.loadingStatus);
+
+    case ACTION.SAVE_PLAYLIST_TRACKS:
+      return savePlaylistTracks(state, action.playlist, action.tracks, action.loadingStatus);
+
     default:
       return state;
   }
 };
-
-
-// const setPlaylistTracksLoadingStatus = (state, playlist, loadingStatus) => ({
-//   ...playlist,
-//   playlist.loadingStatus: LOADING.IN_PROGRESS,
-// });
-
-    // case ACTION.SET_PLAYLIST_TRACKS_LOADING_STATUS:
-    //   return setPlaylistTracksLoadState(state, action.playlist, action.loadingStatus);
-

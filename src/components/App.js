@@ -2,8 +2,11 @@ import React from 'react';
 import '../styles/App.css';
 import { connect } from 'react-redux'
 
-import { fetchAllPlaylists, setActivePlaylist } from '../actions/playlists.js';
-import { fetchTracks } from '../actions/tracks.js';
+import {
+  fetchAllPlaylists,
+  setActivePlaylist,
+} from '../actions/playlists.js';
+import { fetchTracksForPlaylist } from '../actions/tracks.js';
 
 import { Playlist } from './Playlist.js';
 import { Tracklist } from './Tracklist.js';
@@ -35,6 +38,7 @@ class App extends React.Component {
                     key={`playlist-${playlist.id}`}
                     playlist={playlist}
                     setActivePlaylist={this.props.setActivePlaylist}
+                    fetchTracksForPlaylist={this.props.fetchTracksForPlaylist}
                     />
                 )
               }
@@ -58,7 +62,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   fetchAllPlaylists: () => fetchAllPlaylists(dispatch),
-  fetchTracks: () => fetchTracks(dispatch),
+  fetchTracksForPlaylist: (playlist) => fetchTracksForPlaylist(dispatch, playlist),
   setActivePlaylist: (playlist) => dispatch(setActivePlaylist(playlist)),
 });
 

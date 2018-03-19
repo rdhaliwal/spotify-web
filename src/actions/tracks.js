@@ -1,67 +1,28 @@
-import { ACTION } from './types.js';
+import { API } from '../lib/api.js';
+import { ACTION, LOADING } from './types.js';
 
-const changeCaseObject = require('change-case-object');
+const playlistLoadingStatus = (loadingStatus, playlist) => ({
+  type: ACTION.SET_PLAYLIST_TRACKS_LOADING_STATUS,
+  playlist,
+  loadingStatus,
+});
 
-const parseJsonResponse = (response) => {
-  let json = response.json();
+export const fetchTracksForPlaylist = (dispatch, playlist) => {
+  if (playlist.loadingStatus !== LOADING.SUCCESS) {
+    dispatch(playlistLoadingStatus(LOADING.IN_PROGRESS, playlist));
 
-  if (response.ok) {
-    return json;
-  } else {
-    // Reject the promise if the response is a 500
-    return json.then(err => {throw err;});
+    return API.fetchTracksForPlaylist(playlist.href)
+      .then((playlist) => {
+        dispatch({
+          type: ACTION.SAVE_PLAYLIST_TRACKS,
+          tracks: playlist.tracks.items,
+          loadingStatus: LOADING.SUCCESS,
+          playlist,
+        });
+      }).catch(err => {
+        console.error(err);
+        dispatch(playlistLoadingStatus(LOADING.ERROR, playlist));
+      });
   }
 };
 
-const convertCases = (json) => {
-  return changeCaseObject.camelCase(json);
-};
-
-const fetchAllPlaylists = (accessToken) => {
-  const API_ENDPOINT = `https://api.spotify.com/v1`;
-  let url = `${API_ENDPOINT}/me/playlists`;
-  const GET_HEADER = {
-    method: 'GET',
-    mode: 'cors',
-    headers:{
-      'Accept':'application/json',
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken}`,
-    }
-  };
-
-  return fetch(url, GET_HEADER)
-    .then(response => parseJsonResponse(response))
-    .then(json => convertCases(json));
-};
-
-const fetchPlaylistDetails = (playlist, accessToken) => {
-  let url = playlist.href;
-  const GET_HEADER = {
-    method: 'GET',
-    mode: 'cors',
-    headers:{
-      'Accept':'application/json',
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken}`,
-    }
-  };
-
-  return fetch(url, GET_HEADER)
-    .then(response => parseJsonResponse(response))
-    .then(json => convertCases(json));
-};
-
-
-export const saveTracks = (tracks) => ({
-  type: ACTION.SAVE_TRACKS,
-  tracks: tracks
-});
-
-export const fetchTracks = (dispatch, accessToken) => {
-  fetchAllPlaylists(accessToken).then(playlists => {
-    return fetchPlaylistDetails(playlists.items[0], accessToken);
-  }).then(playlist => {
-    dispatch(saveTracks(playlist.tracks.items));
-  });
-}
