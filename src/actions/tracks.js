@@ -1,4 +1,4 @@
-import { ACTION_TYPES } from './types.js';
+import { ACTION } from './types.js';
 
 const changeCaseObject = require('change-case-object');
 
@@ -54,7 +54,7 @@ const fetchPlaylistDetails = (playlist, accessToken) => {
 
 
 export const saveTracks = (tracks) => ({
-  type: ACTION_TYPES.SAVE_TRACKS,
+  type: ACTION.SAVE_TRACKS,
   tracks: tracks
 });
 

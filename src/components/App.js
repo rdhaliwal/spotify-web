@@ -3,6 +3,7 @@ import '../styles/App.css';
 import { connect } from 'react-redux'
 
 import { getAccessToken } from '../lib/authentication.js';
+import { fetchAllPlaylists } from '../actions/playlists.js';
 import { fetchTracks } from '../actions/tracks.js';
 import { TrackCard } from './TrackCard.js';
 
@@ -20,7 +21,7 @@ class App extends React.Component {
 
   componentDidMount() {
     if (this.state.accessToken !== null) {
-      this.props.fetchTracks(this.state.accessToken);
+      this.props.fetchAllPlaylists(this.state.accessToken);
     }
   }
 
@@ -28,15 +29,13 @@ class App extends React.Component {
     return (
       <div className="App">
         <h1>Spotify thing.</h1>
-        <p>
-          Your temporary access token: {this.state.accessToken}
-        </p>
         <hr />
         <div>
-          Songs:
+          Playlists: {this.props.playlists.loadingStatus}
+
           {
-            this.props.tracks.length > 0 &&
-            this.props.tracks.map((track, index) => <TrackCard {...track} key={`song-${index}`} />)
+            this.props.playlists.allPlaylists.length > 0 &&
+            this.props.playlists.allPlaylists.map((playlist, index) => <li key={`song-${index}`}>{playlist.name}</li>)
           }
         </div>
       </div>
@@ -46,10 +45,12 @@ class App extends React.Component {
 
 
 const mapStateToProps = (state) => ({
-  tracks: state.tracks
+  tracks: state.tracks,
+  playlists: state.playlists,
 });
 
 const mapDispatchToProps = (dispatch) => ({
+  fetchAllPlaylists: token => fetchAllPlaylists(dispatch, token),
   fetchTracks: token => fetchTracks(dispatch, token),
 });
 

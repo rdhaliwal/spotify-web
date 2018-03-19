@@ -1,7 +1,7 @@
-import { ACTION_TYPES } from '../actions/types.js';
+import { ACTION } from '../actions/types.js';
 
 export const tracks = (state = [], action) => {
-  if (action.type === ACTION_TYPES.SAVE_TRACKS) {
+  if (action.type === ACTION.SAVE_TRACKS) {
     return [...state, ...action.tracks];
   } else {
     return state;
