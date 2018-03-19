@@ -33,7 +33,7 @@ const parseAccessToken = () => {
 
 export const getAccessToken = () => {
   let accessToken = null;
-  const pathname = window.location.pathname;
+  const { pathname } = window.location;
   if (pathname === '/callback') {
     accessToken = parseAccessToken();
   } else {
