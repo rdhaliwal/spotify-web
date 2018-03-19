@@ -5,7 +5,8 @@ import { connect } from 'react-redux'
 import { fetchAllPlaylists, setActivePlaylist } from '../actions/playlists.js';
 import { fetchTracks } from '../actions/tracks.js';
 
-import Playlist from './Playlist.js';
+import { Playlist } from './Playlist.js';
+import { Tracklist } from './Tracklist.js';
 
 class App extends React.Component {
   componentDidMount() {
@@ -17,39 +18,35 @@ class App extends React.Component {
       loadingStatus, allPlaylists,
       activePlaylist
     } = this.props.playlists;
+    let hasActivePlaylist = Object.keys(activePlaylist).length > 0;
 
     return (
       <div className="App">
         <h1>Spotify thing.</h1>
-        <hr />
         <div>
-          Load playlists: {loadingStatus}
-          <hr />
+          Load playlists: {loadingStatus} <hr />
         </div>
-        <div>
-          Active playlist:
-          {
-            Object.keys(activePlaylist).length > 0 ?
-              activePlaylist.name :
-              'No active playlist'
-          }
-          <hr />
+        <div className="App-playlistTrackContainer">
+          <div className="App-playlists">
+              {
+                allPlaylists.length > 0 &&
+                allPlaylists.map((playlist) =>
+                  <Playlist
+                    key={`playlist-${playlist.id}`}
+                    playlist={playlist}
+                    setActivePlaylist={this.props.setActivePlaylist}
+                    />
+                )
+              }
+            </div>
+            <div className="App-tracks">
+              {
+                hasActivePlaylist &&
+                <Tracklist playlist={activePlaylist} />
+              }
+            </div>
+          </div>
         </div>
-        <div>
-          All playlists
-          <hr />
-          {
-            allPlaylists.length > 0 &&
-            allPlaylists.map((playlist) =>
-              <Playlist
-                key={`playlist-${playlist.id}`}
-                playlist={playlist}
-                setActivePlaylist={this.props.setActivePlaylist}
-                />
-            )
-          }
-        </div>
-      </div>
     );
   }
 }

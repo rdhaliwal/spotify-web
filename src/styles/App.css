@@ -1,4 +1,19 @@
+/*.Body { display: grid; }*/
 .App {
   text-align: center;
+  height: 100%;
 }
 
+.App-playlistTrackContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  /*height: 100%;*/
+}
+
+.App-playlists,
+.App-tracks {
+  flex: 1;
+  height: 100%;
+}
