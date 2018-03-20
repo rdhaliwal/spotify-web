@@ -23,6 +23,6 @@ export const fetchTracksForPlaylist = (dispatch, playlist) => {
         console.error(err);
         dispatch(playlistLoadingStatus(LOADING.ERROR, playlist));
       });
-  }
+  } // else tracks are already loaded, no need to refetch.
 };
 

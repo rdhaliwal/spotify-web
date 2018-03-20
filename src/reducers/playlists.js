@@ -30,6 +30,9 @@ const setPlaylistTracksLoadingStatus = (state, playlist, loadingStatus) => {
     newState.activePlaylist = newPlaylist;
   }
 
+  newState.allPlaylists = newState.allPlaylists.map(p => {
+    return p.id === newPlaylist.id ? newPlaylist : p
+  });
   return newState;
 };
 

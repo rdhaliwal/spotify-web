@@ -58,7 +58,7 @@ describe('all playlists', () => {
 
 });
 
-describe('active playlists', () => {
+describe('active playlist', () => {
 
   it('sets a new active playlist', () => {
     let expectedResult = {
@@ -80,3 +80,117 @@ describe('active playlists', () => {
   });
 
 });
+
+describe('modifying single playlist', () => {
+
+  it('updates the loading status for an inactive playlist', () => {
+    let state = {
+      loadingStatus: LOADING.SUCCESS,
+      allPlaylists: [
+        { id: 'playlist_1' },
+        { id: 'another_playlist' }
+      ],
+      activePlaylist: {}
+    },
+    expectedResult = {
+      loadingStatus: LOADING.SUCCESS,
+      allPlaylists: [
+        { id: 'playlist_1', loadingStatus: LOADING.IN_PROGRESS },
+        { id: 'another_playlist' }
+      ],
+      activePlaylist: {},
+    };
+
+    let result = playlists(state, {
+      type: ACTION.SET_PLAYLIST_TRACKS_LOADING_STATUS,
+      playlist: {id: 'playlist_1'},
+      loadingStatus: LOADING.IN_PROGRESS
+    });
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  it('updates the loading status for an active playlist', () => {
+    let state = {
+      loadingStatus: LOADING.SUCCESS,
+      allPlaylists: [
+        { id: 'playlist_1' },
+        { id: 'another_playlist' }
+      ],
+      activePlaylist: { id: 'another_playlist' },
+    },
+    expectedResult = {
+      loadingStatus: LOADING.SUCCESS,
+      allPlaylists: [
+        { id: 'playlist_1', },
+        { id: 'another_playlist' , loadingStatus: LOADING.IN_PROGRESS },
+      ],
+      activePlaylist: { id: 'another_playlist' , loadingStatus: LOADING.IN_PROGRESS },
+    };
+
+    let result = playlists(state, {
+      type: ACTION.SET_PLAYLIST_TRACKS_LOADING_STATUS,
+      playlist: {id: 'another_playlist'},
+      loadingStatus: LOADING.IN_PROGRESS
+    });
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  it('updates the tracks and loading status for a inactive playlist', () => {
+    let state = {
+      loadingStatus: LOADING.SUCCESS,
+      allPlaylists: [
+        { id: 'playlist_1' },
+        { id: 'another_playlist' }
+      ],
+      activePlaylist: {},
+    },
+    expectedResult = {
+      loadingStatus: LOADING.SUCCESS,
+      allPlaylists: [
+        { id: 'playlist_1', loadingStatus: LOADING.SUCCESS, tracks: [ 'Shoop', 'Heroes' ], },
+        { id: 'another_playlist' }
+      ],
+      activePlaylist: {},
+    };
+
+    let result = playlists(state, {
+      type: ACTION.SAVE_PLAYLIST_TRACKS,
+      playlist: {id: 'playlist_1'},
+      tracks: [ 'Shoop', 'Heroes' ],
+      loadingStatus: LOADING.SUCCESS
+    });
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  it('updates the tracks and loading status for an active playlist', () => {
+    let state = {
+      loadingStatus: LOADING.SUCCESS,
+      allPlaylists: [
+        { id: 'playlist_1' },
+        { id: 'another_playlist' }
+      ],
+      activePlaylist: { id: 'another_playlist' },
+    },
+    expectedResult = {
+      loadingStatus: LOADING.SUCCESS,
+      allPlaylists: [
+        { id: 'playlist_1'},
+        { id: 'another_playlist', loadingStatus: LOADING.SUCCESS, tracks: [ 'Shoop', 'Heroes' ],  }
+      ],
+      activePlaylist: { id: 'another_playlist', loadingStatus: LOADING.SUCCESS, tracks: [ 'Shoop', 'Heroes' ] }
+    };
+
+    let result = playlists(state, {
+      type: ACTION.SAVE_PLAYLIST_TRACKS,
+      playlist: {id: 'another_playlist'},
+      tracks: [ 'Shoop', 'Heroes' ],
+      loadingStatus: LOADING.SUCCESS
+    });
+
+    expect(result).toEqual(expectedResult);
+  });
+
+})
