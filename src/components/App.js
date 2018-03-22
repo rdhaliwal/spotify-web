@@ -29,28 +29,31 @@ class App extends React.Component {
         <div>
           Load playlists: {loadingStatus} <hr />
         </div>
+        <div className="App-playbackContainer">
+          Current song is: {`{song name}`}
+        </div>
         <div className="App-playlistTrackContainer">
           <div className="App-playlists">
-              {
-                allPlaylists.length > 0 &&
-                allPlaylists.map((playlist) =>
-                  <Playlist
-                    key={`playlist-${playlist.id}`}
-                    playlist={playlist}
-                    setActivePlaylist={this.props.setActivePlaylist}
-                    fetchTracksForPlaylist={this.props.fetchTracksForPlaylist}
-                    />
-                )
-              }
-            </div>
-            <div className="App-tracks">
-              {
-                hasActivePlaylist &&
-                <Tracklist playlist={activePlaylist} />
-              }
-            </div>
+            {
+              allPlaylists.length > 0 &&
+              allPlaylists.map((playlist) =>
+                <Playlist
+                  key={`playlist-${playlist.id}`}
+                  playlist={playlist}
+                  setActivePlaylist={this.props.setActivePlaylist}
+                  fetchTracksForPlaylist={this.props.fetchTracksForPlaylist}
+                  />
+              )
+            }
+          </div>
+          <div className="App-tracks">
+            {
+              hasActivePlaylist &&
+              <Tracklist playlist={activePlaylist} />
+            }
           </div>
         </div>
+      </div>
     );
   }
 }
