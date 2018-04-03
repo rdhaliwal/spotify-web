@@ -1,5 +1,24 @@
-// import { ACTION } from '../actions/types.js';
+// import { ACTION, LOADING } from '../actions/types.js';
+import { ACTION } from '../actions/types.js';
 
-export const tracks = (state = [], action) => {
-  return state;
+let initialState = {
+  activeTrack: {
+    name: null
+  },
+};
+
+const setActiveTrack = (state, track) => ({
+  ...state,
+  activeTrack: track,
+});
+
+export const tracks = (state = initialState, action) => {
+  switch (action.type) {
+
+    case ACTION.SET_ACTIVE_TRACK:
+      return setActiveTrack(state, action.track);
+
+    default:
+      return state;
+  }
 };

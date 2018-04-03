@@ -6,7 +6,11 @@ import {
   fetchAllPlaylists,
   setActivePlaylist,
 } from '../actions/playlists.js';
-import { fetchTracksForPlaylist } from '../actions/tracks.js';
+
+import {
+  fetchTracksForPlaylist,
+  setActiveTrack
+} from '../actions/tracks.js';
 
 import { Playlist } from './Playlist.js';
 import { Tracklist } from './Tracklist.js';
@@ -30,7 +34,7 @@ class App extends React.Component {
           Load playlists: {loadingStatus} <hr />
         </div>
         <div className="App-playbackContainer">
-          Current song is: {`{song name}`}
+          Current song is: {`${this.props.activeTrack.name}`}
         </div>
         <div className="App-playlistTrackContainer">
           <div className="App-playlists">
@@ -49,7 +53,10 @@ class App extends React.Component {
           <div className="App-tracks">
             {
               hasActivePlaylist &&
-              <Tracklist playlist={activePlaylist} />
+              <Tracklist
+                playlist={activePlaylist}
+                setActiveTrack={this.props.setActiveTrack}
+                />
             }
           </div>
         </div>
@@ -60,6 +67,7 @@ class App extends React.Component {
 
 const mapStateToProps = (state) => ({
   tracks: state.tracks,
+  activeTrack: state.tracks.activeTrack,
   playlists: state.playlists,
 });
 
@@ -67,6 +75,7 @@ const mapDispatchToProps = (dispatch) => ({
   fetchAllPlaylists: () => fetchAllPlaylists(dispatch),
   fetchTracksForPlaylist: (playlist) => fetchTracksForPlaylist(dispatch, playlist),
   setActivePlaylist: (playlist) => dispatch(setActivePlaylist(playlist)),
+  setActiveTrack: (track) => dispatch(setActiveTrack(track)),
 });
 
 export default connect(

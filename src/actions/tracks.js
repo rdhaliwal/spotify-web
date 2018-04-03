@@ -26,3 +26,7 @@ export const fetchTracksForPlaylist = (dispatch, playlist) => {
   } // else tracks are already loaded, no need to refetch.
 };
 
+export const setActiveTrack = (track) => ({
+  type: ACTION.SET_ACTIVE_TRACK,
+  track: track,
+});
