@@ -6,14 +6,13 @@ import {
   fetchAllPlaylists,
   setActivePlaylist,
 } from '../actions/playlists.js';
-
 import {
   fetchTracksForPlaylist,
   setActiveTrack
 } from '../actions/tracks.js';
-
 import { Playlist } from './Playlist.js';
 import { Tracklist } from './Tracklist.js';
+import { CurrentTrack } from './CurrentTrack.js';
 
 class App extends React.Component {
   componentDidMount() {
@@ -34,7 +33,7 @@ class App extends React.Component {
           Load playlists: {loadingStatus} <hr />
         </div>
         <div className="App-playbackContainer">
-          Current song is: {`${this.props.activeTrack.name}`}
+          <CurrentTrack track={this.props.activeTrack} />
         </div>
         <div className="App-playlistTrackContainer">
           <div className="App-playlists">

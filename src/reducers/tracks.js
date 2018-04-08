@@ -2,9 +2,7 @@
 import { ACTION } from '../actions/types.js';
 
 let initialState = {
-  activeTrack: {
-    name: null
-  },
+  activeTrack: null,
 };
 
 const setActiveTrack = (state, track) => ({
