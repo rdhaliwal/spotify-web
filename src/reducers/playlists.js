@@ -46,6 +46,7 @@ const savePlaylistTracks = (state, playlist, tracks, loadingStatus) => {
   newPlaylist.loadingStatus = loadingStatus;
   if (newPlaylist.id === newState.activePlaylist.id) {
     newState.activePlaylist = newPlaylist;
+    newState = setActiveTrack(newState, initialState.activeTrackPointer)
   }
 
   newState.allPlaylists = newState.allPlaylists.map(p => {
@@ -78,8 +79,7 @@ export const playlists = (state = initialState, action) => {
       return setPlaylistTracksLoadingStatus(state, action.playlist, action.loadingStatus);
 
     case ACTION.SAVE_PLAYLIST_TRACKS:
-      let newState = savePlaylistTracks(state, action.playlist, action.tracks, action.loadingStatus);
-      return setActiveTrack(newState, initialState.activeTrackPointer)
+      return savePlaylistTracks(state, action.playlist, action.tracks, action.loadingStatus);
 
     case ACTION.SET_ACTIVE_TRACK:
       return setActiveTrack(state, action.trackPointer)

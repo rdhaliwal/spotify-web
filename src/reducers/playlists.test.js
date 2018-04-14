@@ -1,20 +1,13 @@
 import { playlists } from './playlists.js';
 import { ACTION, LOADING } from '../actions/types.js';
 
-let initialState = {
+let initialState = Object.freeze({
   loadingStatus: LOADING.READY,
   allPlaylists: [],
   activePlaylist: {},
-};
-
-beforeEach(() => {
-  initialState = {
-    loadingStatus: LOADING.READY,
-    allPlaylists: [],
-    activePlaylist: {},
-  };
+  activeTrack: null,
+  activeTrackPointer: 0,
 });
-
 
 describe('initial state', () => {
   it('returns the intial state', () => {
@@ -31,6 +24,8 @@ describe('all playlists', () => {
       loadingStatus: LOADING.SUCCESS,
       allPlaylists: [],
       activePlaylist: {},
+      activeTrack: null,
+      activeTrackPointer: 0,
     };
 
     let result = playlists(initialState, {
@@ -46,6 +41,8 @@ describe('all playlists', () => {
       loadingStatus: LOADING.READY,
       allPlaylists: ['harry', 'potter'],
       activePlaylist: {},
+      activeTrack: null,
+      activeTrackPointer: 0,
     };
 
     let result = playlists(initialState, {
@@ -66,7 +63,9 @@ describe('active playlist', () => {
       allPlaylists: [],
       activePlaylist: {
         name: `Yer a wizard, 'arry`
-      }
+      },
+      activeTrack: null,
+      activeTrackPointer: 0,
     };
 
     let result = playlists(initialState, {
@@ -81,6 +80,7 @@ describe('active playlist', () => {
 
 });
 
+
 describe('modifying single playlist', () => {
 
   it('updates the loading status for an inactive playlist', () => {
@@ -90,7 +90,9 @@ describe('modifying single playlist', () => {
         { id: 'playlist_1' },
         { id: 'another_playlist' }
       ],
-      activePlaylist: {}
+      activePlaylist: {},
+      activeTrack: null,
+      activeTrackPointer: 0,
     },
     expectedResult = {
       loadingStatus: LOADING.SUCCESS,
@@ -99,6 +101,8 @@ describe('modifying single playlist', () => {
         { id: 'another_playlist' }
       ],
       activePlaylist: {},
+      activeTrack: null,
+      activeTrackPointer: 0,
     };
 
     let result = playlists(state, {
@@ -118,6 +122,8 @@ describe('modifying single playlist', () => {
         { id: 'another_playlist' }
       ],
       activePlaylist: { id: 'another_playlist' },
+      activeTrack: null,
+      activeTrackPointer: 0,
     },
     expectedResult = {
       loadingStatus: LOADING.SUCCESS,
@@ -126,6 +132,8 @@ describe('modifying single playlist', () => {
         { id: 'another_playlist' , loadingStatus: LOADING.IN_PROGRESS },
       ],
       activePlaylist: { id: 'another_playlist' , loadingStatus: LOADING.IN_PROGRESS },
+      activeTrack: null,
+      activeTrackPointer: 0,
     };
 
     let result = playlists(state, {
@@ -137,7 +145,7 @@ describe('modifying single playlist', () => {
     expect(result).toEqual(expectedResult);
   });
 
-  it('updates the tracks and loading status for a inactive playlist', () => {
+  it('updates the tracks and loading status for an inactive playlist', () => {
     let state = {
       loadingStatus: LOADING.SUCCESS,
       allPlaylists: [
@@ -145,20 +153,24 @@ describe('modifying single playlist', () => {
         { id: 'another_playlist' }
       ],
       activePlaylist: {},
+      activeTrack: null,
+      activeTrackPointer: 0,
     },
     expectedResult = {
       loadingStatus: LOADING.SUCCESS,
       allPlaylists: [
-        { id: 'playlist_1', loadingStatus: LOADING.SUCCESS, tracks: [ 'Shoop', 'Heroes' ], },
+        { id: 'playlist_1', loadingStatus: LOADING.SUCCESS, tracks: [ {track:'Shoop'}, {track:'Heroes'} ] },
         { id: 'another_playlist' }
       ],
       activePlaylist: {},
+      activeTrack: null,
+      activeTrackPointer: 0,
     };
 
     let result = playlists(state, {
       type: ACTION.SAVE_PLAYLIST_TRACKS,
       playlist: {id: 'playlist_1'},
-      tracks: [ 'Shoop', 'Heroes' ],
+      tracks: [ {track:'Shoop'}, {track:'Heroes'} ],
       loadingStatus: LOADING.SUCCESS
     });
 
@@ -173,24 +185,104 @@ describe('modifying single playlist', () => {
         { id: 'another_playlist' }
       ],
       activePlaylist: { id: 'another_playlist' },
-    },
-    expectedResult = {
+      activeTrack: null,
+      activeTrackPointer: 0,
+    };
+    let expectedResult = {
       loadingStatus: LOADING.SUCCESS,
       allPlaylists: [
         { id: 'playlist_1'},
-        { id: 'another_playlist', loadingStatus: LOADING.SUCCESS, tracks: [ 'Shoop', 'Heroes' ],  }
+        { id: 'another_playlist', loadingStatus: LOADING.SUCCESS, tracks: [ {track:'Shoop'}, {track:'Heroes'} ],  }
       ],
-      activePlaylist: { id: 'another_playlist', loadingStatus: LOADING.SUCCESS, tracks: [ 'Shoop', 'Heroes' ] }
+      activePlaylist: { id: 'another_playlist', loadingStatus: LOADING.SUCCESS, tracks: [ {track:'Shoop'}, {track:'Heroes'} ] },
+      activeTrack: 'Shoop',
+      activeTrackPointer: 0,
     };
 
     let result = playlists(state, {
       type: ACTION.SAVE_PLAYLIST_TRACKS,
       playlist: {id: 'another_playlist'},
-      tracks: [ 'Shoop', 'Heroes' ],
+      tracks: [ {track:'Shoop'}, {track:'Heroes'} ],
       loadingStatus: LOADING.SUCCESS
     });
 
     expect(result).toEqual(expectedResult);
   });
 
-})
+  it('resets the track pointer to zero for an active playlist', () => {
+    let state = {
+      loadingStatus: LOADING.SUCCESS,
+      allPlaylists: [
+        { id: 'playlist_1' },
+        { id: 'another_playlist' }
+      ],
+      activePlaylist: { id: 'another_playlist' },
+      activeTrack: null,
+      activeTrackPointer: 3,
+    };
+    let expectedResult = {
+      loadingStatus: LOADING.SUCCESS,
+      allPlaylists: [
+        { id: 'playlist_1'},
+        { id: 'another_playlist', loadingStatus: LOADING.SUCCESS, tracks: [ {track:'Shoop'}, {track:'Heroes'} ],  }
+      ],
+      activePlaylist: { id: 'another_playlist', loadingStatus: LOADING.SUCCESS, tracks: [ {track:'Shoop'}, {track:'Heroes'} ] },
+      activeTrack: 'Shoop',
+      activeTrackPointer: 0,
+    };
+
+    let result = playlists(state, {
+      type: ACTION.SAVE_PLAYLIST_TRACKS,
+      playlist: {id: 'another_playlist'},
+      tracks: [ {track:'Shoop'}, {track:'Heroes'} ],
+      loadingStatus: LOADING.SUCCESS
+    });
+
+    expect(result).toEqual(expectedResult);
+  });
+
+});
+
+
+describe('sets the active track', () => {
+  it('sets the pointer', () => {
+    let state = {
+      loadingStatus: LOADING.SUCCESS,
+      allPlaylists: [
+        { id: 'playlist_1'},
+        { id: 'another_playlist', loadingStatus: LOADING.SUCCESS, tracks: [ {track:'Shoop'}, {track:'Heroes'} ],  }
+      ],
+      activePlaylist: { id: 'another_playlist', loadingStatus: LOADING.SUCCESS, tracks: [ {track:'Shoop'}, {track:'Heroes'} ] },
+      activeTrack: 'Shoop',
+      activeTrackPointer: 0,
+    };
+
+    let result = playlists(state, {
+      type: ACTION.SET_ACTIVE_TRACK,
+      trackPointer: 1,
+    });
+
+    expect(result.activeTrackPointer).toEqual(1);
+  });
+
+  it('sets the active track', () => {
+    let state = {
+      loadingStatus: LOADING.SUCCESS,
+      allPlaylists: [
+        { id: 'playlist_1'},
+        { id: 'another_playlist', loadingStatus: LOADING.SUCCESS, tracks: [ {track:'Shoop'}, {track:'Heroes'} ],  }
+      ],
+      activePlaylist: { id: 'another_playlist', loadingStatus: LOADING.SUCCESS, tracks: [ {track:'Shoop'}, {track:'Heroes'} ] },
+      activeTrack: 'Shoop',
+      activeTrackPointer: 0,
+    };
+
+    let result = playlists(state, {
+      type: ACTION.SET_ACTIVE_TRACK,
+      trackPointer: 1,
+    });
+
+    expect(result.activeTrack).toEqual('Heroes');
+  });
+
+});
