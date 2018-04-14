@@ -4,6 +4,8 @@ let initialState = {
   loadingStatus: LOADING.READY,
   allPlaylists: [],
   activePlaylist: {},
+  activeTrack: null,
+  activeTrackPointer: 0,
 };
 
 const setPlaylistLoadingStatus = (state, loadingStatus) => ({
@@ -52,6 +54,14 @@ const savePlaylistTracks = (state, playlist, tracks, loadingStatus) => {
   return newState;
 };
 
+const setActiveTrack = (state, trackPointer) => {
+  return {
+    ...state,
+    activeTrackPointer: trackPointer,
+    activeTrack: state.activePlaylist.tracks[trackPointer].track,
+  };
+};
+
 export const playlists = (state = initialState, action) => {
   switch (action.type) {
 
@@ -68,7 +78,11 @@ export const playlists = (state = initialState, action) => {
       return setPlaylistTracksLoadingStatus(state, action.playlist, action.loadingStatus);
 
     case ACTION.SAVE_PLAYLIST_TRACKS:
-      return savePlaylistTracks(state, action.playlist, action.tracks, action.loadingStatus);
+      let newState = savePlaylistTracks(state, action.playlist, action.tracks, action.loadingStatus);
+      return setActiveTrack(newState, initialState.activeTrackPointer)
+
+    case ACTION.SET_ACTIVE_TRACK:
+      return setActiveTrack(state, action.trackPointer)
 
     default:
       return state;

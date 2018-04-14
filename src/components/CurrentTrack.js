@@ -29,36 +29,40 @@ export class CurrentTrack extends React.Component {
     this.audioPlayerRef = React.createRef();
   }
 
-  // componentDidCatch(error, info) {
-  //   debugger;
-  //   console.log(`Info: ${info}`);
-  //   console.log(`Error: ${error}`);
-  // }
-
-  componentDidUpdate(prevProps, prevState, snapshot) {
+  componentDidUpdate(prevProps, prevState) {
     if (this.audioPlayerRef.current == null) { return; }
 
     this.audioPlayerRef.current.pause();
     this.audioPlayerRef.current.load();
-    // this.audioPlayerRef.current.play();
-    this.audioPlayerRef.current.play().catch((e) => {
-      console.log(`Playback issue with: ${prevProps.track.name}`);
-      console.log(`Error: ${e}`);
-    });
+    this.audioPlayerRef.current.play().catch((e) => {});
+
+    this.audioPlayerRef.current.onended = () => {
+      this.props.nextTrack(this.props.trackPointer)
+    };
   }
 
   render() {
     let { track } = this.props;
     if (track == null) { return null; }
 
+
     return (
       <div>
         <SongImage {...track.album}/>
+        { track.previewUrl == null &&
+          <div> No Preview Available </div>
+        }
         <audio controls ref={this.audioPlayerRef}>
           <source type="audio/mpeg" src={track.previewUrl}/>
           Audio tag not supported
         </audio>
+        <button onClick={(e) => this.props.previousTrack(this.props.trackPointer)}>
+          Previous
+        </button>
         <TrackDetails track={track} />
+        <button onClick={(e) => this.props.nextTrack(this.props.trackPointer)}>
+          Next
+        </button>
       </div>
     );
   }

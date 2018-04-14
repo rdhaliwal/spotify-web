@@ -26,7 +26,19 @@ export const fetchTracksForPlaylist = (dispatch, playlist) => {
   } // else tracks are already loaded, no need to refetch.
 };
 
-export const setActiveTrack = (track) => ({
-  type: ACTION.SET_ACTIVE_TRACK,
-  track: track,
-});
+export const setActiveTrack = (dispatch, pointer) => {
+  // TODO-RD: Send playlist, validate pointer is in the playlist.
+  dispatch({
+    type: ACTION.SET_ACTIVE_TRACK,
+    trackPointer: pointer,
+  });
+};
+
+export const nextTrack = (dispatch, trackPointer) => {
+  setActiveTrack(dispatch, trackPointer + 1);
+};
+
+export const previousTrack = (dispatch, trackPointer) => {
+  setActiveTrack(dispatch, trackPointer - 1);
+};
+

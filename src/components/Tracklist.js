@@ -6,18 +6,20 @@ const LocalTrack = ({track}) => {
   );
 };
 
-const FullTrack = ({track, setActiveTrack}) => {
+const FullTrack = ({track, setActiveTrack, pointerIndex}) => {
   return (
-    <button className="u-displayBlock" onClick={(e) => setActiveTrack(track)}>
+    <button className="u-displayBlock" onClick={(e) => setActiveTrack(pointerIndex)}>
       Full: {track.name}
     </button>
   );
 };
 
-const TrackCard = ({track, isLocal, setActiveTrack}) => {
-  return isLocal ?
-    <LocalTrack track={track} /> :
-    <FullTrack track={track} setActiveTrack={setActiveTrack} />
+const TrackCard = ({track, isLocal, setActiveTrack, pointerIndex}) => {
+  return isLocal ? <LocalTrack track={track} /> :
+    <FullTrack
+      track={track}
+      setActiveTrack={setActiveTrack}
+      pointerIndex={pointerIndex} />
 };
 
 export class Tracklist extends React.Component {
@@ -31,6 +33,7 @@ export class Tracklist extends React.Component {
           { this.props.playlist.tracks.length > 0 &&
             this.props.playlist.tracks.map((t, index) => (
               <TrackCard
+                pointerIndex={index}
                 track={t.track}
                 isLocal={t.isLocal}
                 key={`${this.props.playlist.id}-${index}`}

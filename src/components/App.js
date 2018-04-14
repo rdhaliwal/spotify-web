@@ -6,10 +6,14 @@ import {
   fetchAllPlaylists,
   setActivePlaylist,
 } from '../actions/playlists.js';
+
 import {
   fetchTracksForPlaylist,
-  setActiveTrack
+  setActiveTrack,
+  nextTrack,
+  previousTrack,
 } from '../actions/tracks.js';
+
 import { Playlist } from './Playlist.js';
 import { Tracklist } from './Tracklist.js';
 import { CurrentTrack } from './CurrentTrack.js';
@@ -21,9 +25,13 @@ class App extends React.Component {
 
   render() {
     let {
-      loadingStatus, allPlaylists,
-      activePlaylist
+      loadingStatus,
+      allPlaylists,
+      activePlaylist,
+      activeTrack,
+      activeTrackPointer
     } = this.props.playlists;
+
     let hasActivePlaylist = Object.keys(activePlaylist).length > 0;
 
     return (
@@ -33,7 +41,12 @@ class App extends React.Component {
           Load playlists: {loadingStatus} <hr />
         </div>
         <div className="App-playbackContainer">
-          <CurrentTrack track={this.props.activeTrack} />
+          <CurrentTrack
+            track={activeTrack}
+            trackPointer={activeTrackPointer}
+            nextTrack={this.props.nextTrack}
+            previousTrack={this.props.previousTrack}
+            />
         </div>
         <div className="App-playlistTrackContainer">
           <div className="App-playlists">
@@ -65,8 +78,7 @@ class App extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  tracks: state.tracks,
-  activeTrack: state.tracks.activeTrack,
+  // tracks: state.tracks,
   playlists: state.playlists,
 });
 
@@ -74,7 +86,9 @@ const mapDispatchToProps = (dispatch) => ({
   fetchAllPlaylists: () => fetchAllPlaylists(dispatch),
   fetchTracksForPlaylist: (playlist) => fetchTracksForPlaylist(dispatch, playlist),
   setActivePlaylist: (playlist) => dispatch(setActivePlaylist(playlist)),
-  setActiveTrack: (track) => dispatch(setActiveTrack(track)),
+  setActiveTrack: (pointer) => setActiveTrack(dispatch, pointer),
+  nextTrack: (trackPointer) => nextTrack(dispatch, trackPointer),
+  previousTrack: (trackPointer) => previousTrack(dispatch, trackPointer),
 });
 
 export default connect(
