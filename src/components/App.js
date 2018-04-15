@@ -82,10 +82,11 @@ class App extends React.Component {
 
 const BackgroundAlbum = ({track}) => {
   if (track == null) { return null; }
-  let image = track.album.images.find(img => img.height === 300);
+  let image = track.album.images.find(img => img.height > 200 && img.height < 400);
   if (image == null) { return null; }
   return (
     <img
+      alt=""
       className="App-background"
       src={image.url} />
   );

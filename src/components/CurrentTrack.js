@@ -1,10 +1,11 @@
 import React from 'react';
 
 const SongImage = ({images, name, isPlaying}) => {
-  let image = images.find(img => img.height < 100);
+  let image = images.find(img => img.height > 200 && img.height < 400);
   if (image == null) { return null; }
-  let classNames = isPlaying ? 'CurrentTrack-albumArt is-playing' :
-    'CurrentTrack-albumArt';
+
+  let classNames = 'CurrentTrack-albumArt ';
+  if (!isPlaying) { classNames += 'is-paused '; }
 
   return (
     <img
@@ -29,11 +30,14 @@ export class CurrentTrack extends React.Component {
   constructor(props) {
     super(props);
 
-    this.audioPlayerRef = React.createRef();
     this.setPlayPaused = this.setPlayPaused.bind(this);
     this.state = {
       playing: false,
+      currentTime: 0,
+      trackDuration: 0,
     };
+
+    this.audioPlayerRef = React.createRef();
   }
 
   setPlayPaused() {
@@ -50,6 +54,10 @@ export class CurrentTrack extends React.Component {
     if (audioPlayer == null) { return; }
 
     if (prevProps.track == null || this.props.track == null) {
+      this.audioPlayerRef.current.addEventListener("timeupdate", () => {
+        this.setState({currentTime: audioPlayer.currentTime});
+        this.setState({trackDuration: audioPlayer.duration});
+      });
       return;
     }
 
@@ -78,10 +86,11 @@ export class CurrentTrack extends React.Component {
           { track.previewUrl == null &&
             <div> No Preview Available </div>
           }
-          <audio controls ref={this.audioPlayerRef}>
+          <audio controls={false} ref={this.audioPlayerRef}>
             <source type="audio/mpeg" src={track.previewUrl}/>
             Audio tag not supported
           </audio>
+          <span>{this.state.currentTime} / {this.state.trackDuration} </span>
         </div>
         <div>
           <TrackDetails track={track} />

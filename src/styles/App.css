@@ -55,14 +55,18 @@
   height: calc(100% + 50px);
   z-index: 0;
   filter: blur(50px) opacity(50%);
+  object-fit: cover;
 }
 
 .CurrentTrack-albumArt {
   border-radius: 50%;
-}
-.CurrentTrack-albumArt.is-playing {
   animation: spin 10s linear infinite;
 }
+
+.CurrentTrack-albumArt.is-paused {
+  animation-play-state: paused
+}
+
 @keyframes spin {
   0%   { transform:rotate(0deg); }
   100% { transform:rotate(360deg); }
