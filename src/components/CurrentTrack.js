@@ -27,24 +27,43 @@ export class CurrentTrack extends React.Component {
     super(props);
 
     this.audioPlayerRef = React.createRef();
+    this.setPlayPaused = this.setPlayPaused.bind(this);
+    this.state = {
+      playing: false,
+    };
+  }
+
+  setPlayPaused() {
+    let audioPlayer = this.audioPlayerRef.current;
+    if (audioPlayer != null && this.state.playing) {
+      audioPlayer.play().catch(e => {});
+    } else if (audioPlayer != null) {
+      audioPlayer.pause();
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.audioPlayerRef.current == null) { return; }
+    let audioPlayer = this.audioPlayerRef.current;
+    if (audioPlayer == null) { return; }
 
-    this.audioPlayerRef.current.pause();
-    this.audioPlayerRef.current.load();
-    this.audioPlayerRef.current.play().catch((e) => {});
+    if (prevProps.track == null || this.props.track == null) {
+      return;
+    }
 
-    this.audioPlayerRef.current.onended = () => {
-      this.props.nextTrack(this.props.trackPointer)
-    };
+    if (this.props.track.previewUrl !== prevProps.track.previewUrl) {
+      audioPlayer.load();
+      audioPlayer.onended = () => {
+        this.props.nextTrack(this.props.trackPointer)
+      };
+    }
+
+    this.setPlayPaused();
   }
 
   render() {
     let { track } = this.props;
     if (track == null) { return null; }
-
+    this.setPlayPaused();
 
     return (
       <div>
@@ -56,13 +75,21 @@ export class CurrentTrack extends React.Component {
           <source type="audio/mpeg" src={track.previewUrl}/>
           Audio tag not supported
         </audio>
-        <button onClick={(e) => this.props.previousTrack(this.props.trackPointer)}>
-          Previous
-        </button>
-        <TrackDetails track={track} />
-        <button onClick={(e) => this.props.nextTrack(this.props.trackPointer)}>
-          Next
-        </button>
+        <div>
+          <TrackDetails track={track} />
+          <button onClick={(e) => this.props.previousTrack(this.props.trackPointer)}>
+            Previous
+          </button>
+          <button onClick={(e) => this.setState({playing: true})}>
+            Play
+          </button>
+          <button onClick={(e) => this.setState({playing: false})}>
+            Pause
+          </button>
+          <button onClick={(e) => this.props.nextTrack(this.props.trackPointer)}>
+            Next
+          </button>
+        </div>
       </div>
     );
   }
