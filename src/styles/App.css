@@ -1,10 +1,21 @@
 /*.Body { display: grid; }*/
 .App {
+  position: relative;
+  height: 100%;
+}
+
+.App-container {
+  position: fixed;
+  overflow: scroll;
   text-align: center;
   height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   flex: 1;
+  z-index: 1;
+  /*background-color: rgba(255, 255, 255, 0.33);*/
+  background-color: transparent;
 }
 
 .App-playlistTrackContainer {
@@ -34,3 +45,25 @@
   display: block;
 }
 
+.App-background {
+  position: fixed;
+  top: -25px;
+  left: -25px;
+  right: 0;
+  bottom: 0;
+  width: calc(100% + 50px);
+  height: calc(100% + 50px);
+  z-index: 0;
+  filter: blur(50px) opacity(50%);
+}
+
+.CurrentTrack-albumArt {
+  border-radius: 50%;
+}
+.CurrentTrack-albumArt.is-playing {
+  animation: spin 10s linear infinite;
+}
+@keyframes spin {
+  0%   { transform:rotate(0deg); }
+  100% { transform:rotate(360deg); }
+}

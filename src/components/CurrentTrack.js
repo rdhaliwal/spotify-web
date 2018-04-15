@@ -1,11 +1,14 @@
 import React from 'react';
 
-const SongImage = ({images, name}) => {
+const SongImage = ({images, name, isPlaying}) => {
   let image = images.find(img => img.height < 100);
   if (image == null) { return null; }
+  let classNames = isPlaying ? 'CurrentTrack-albumArt is-playing' :
+    'CurrentTrack-albumArt';
 
   return (
     <img
+      className={classNames}
       src={image.url}
       alt={name}
       width={image.width}
@@ -67,14 +70,19 @@ export class CurrentTrack extends React.Component {
 
     return (
       <div>
-        <SongImage {...track.album}/>
-        { track.previewUrl == null &&
-          <div> No Preview Available </div>
-        }
-        <audio controls ref={this.audioPlayerRef}>
-          <source type="audio/mpeg" src={track.previewUrl}/>
-          Audio tag not supported
-        </audio>
+        <SongImage
+          isPlaying={this.state.playing}
+          {...track.album}
+          />
+        <div>
+          { track.previewUrl == null &&
+            <div> No Preview Available </div>
+          }
+          <audio controls ref={this.audioPlayerRef}>
+            <source type="audio/mpeg" src={track.previewUrl}/>
+            Audio tag not supported
+          </audio>
+        </div>
         <div>
           <TrackDetails track={track} />
           <button onClick={(e) => this.props.previousTrack(this.props.trackPointer)}>

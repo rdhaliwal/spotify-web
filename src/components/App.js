@@ -36,46 +36,60 @@ class App extends React.Component {
 
     return (
       <div className="App">
-        <h1>Spotify thing.</h1>
-        <div>
-          Load playlists: {loadingStatus} <hr />
-        </div>
-        <div className="App-playbackContainer">
-          <CurrentTrack
-            track={activeTrack}
-            trackPointer={activeTrackPointer}
-            nextTrack={this.props.nextTrack}
-            previousTrack={this.props.previousTrack}
-            />
-        </div>
-        <div className="App-playlistTrackContainer">
-          <div className="App-playlists">
-            {
-              allPlaylists.length > 0 &&
-              allPlaylists.map((playlist) =>
-                <Playlist
-                  key={`playlist-${playlist.id}`}
-                  playlist={playlist}
-                  setActivePlaylist={this.props.setActivePlaylist}
-                  fetchTracksForPlaylist={this.props.fetchTracksForPlaylist}
+        <div className="App-container">
+          <h1>Spotify thing.</h1>
+          <div>
+            Load playlists: {loadingStatus} <hr />
+          </div>
+          <div className="App-playbackContainer">
+            <CurrentTrack
+              track={activeTrack}
+              trackPointer={activeTrackPointer}
+              nextTrack={this.props.nextTrack}
+              previousTrack={this.props.previousTrack}
+              />
+          </div>
+          <div className="App-playlistTrackContainer">
+            <div className="App-playlists">
+              {
+                allPlaylists.length > 0 &&
+                allPlaylists.map((playlist) =>
+                  <Playlist
+                    key={`playlist-${playlist.id}`}
+                    playlist={playlist}
+                    setActivePlaylist={this.props.setActivePlaylist}
+                    fetchTracksForPlaylist={this.props.fetchTracksForPlaylist}
+                    />
+                )
+              }
+            </div>
+            <div className="App-tracks">
+              {
+                hasActivePlaylist &&
+                <Tracklist
+                  playlist={activePlaylist}
+                  setActiveTrack={this.props.setActiveTrack}
                   />
-              )
-            }
-          </div>
-          <div className="App-tracks">
-            {
-              hasActivePlaylist &&
-              <Tracklist
-                playlist={activePlaylist}
-                setActiveTrack={this.props.setActiveTrack}
-                />
-            }
+              }
+            </div>
           </div>
         </div>
+        <BackgroundAlbum track={activeTrack} />
       </div>
     );
   }
 }
+
+const BackgroundAlbum = ({track}) => {
+  if (track == null) { return null; }
+  let image = track.album.images.find(img => img.height === 300);
+  if (image == null) { return null; }
+  return (
+    <img
+      className="App-background"
+      src={image.url} />
+  );
+};
 
 const mapStateToProps = (state) => ({
   // tracks: state.tracks,
