@@ -8,12 +8,22 @@ const SongImage = ({images, name, isPlaying}) => {
   if (!isPlaying) { classNames += 'is-paused '; }
 
   return (
-    <img
-      className={classNames}
-      src={image.url}
-      alt={name}
-      width={image.width}
-      height={image.height} />
+    <div className={classNames}>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+        <defs>
+          <mask id="CurrentTrack-albumMask">
+            <circle id="outer" cx="50" cy="50" r="50" fill="white"></circle>
+            <circle id="inner" cx="50" cy="50" r="10" fill="black"></circle>
+          </mask>
+        </defs>
+        <image
+          width="100%"
+          height="100%"
+          mask="url(#CurrentTrack-albumMask)"
+          xlinkHref={image.url}>
+        </image>
+      </svg>
+    </div>
   );
 };
 

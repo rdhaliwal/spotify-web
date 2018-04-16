@@ -59,12 +59,14 @@
 }
 
 .CurrentTrack-albumArt {
-  border-radius: 50%;
-  animation: spin 10s linear infinite;
+  width: 250px;
+  height: 250px;
+  animation: spin 45s linear infinite;
+  margin: 20px auto;
 }
 
 .CurrentTrack-albumArt.is-paused {
-  animation-play-state: paused
+  animation-play-state: paused;
 }
 
 @keyframes spin {
