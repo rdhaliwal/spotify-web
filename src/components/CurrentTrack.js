@@ -30,51 +30,14 @@ export class CurrentTrack extends React.Component {
   constructor(props) {
     super(props);
 
-    this.setPlayPaused = this.setPlayPaused.bind(this);
     this.state = {
       playing: false,
-      currentTime: 0,
-      trackDuration: 0,
     };
-
-    this.audioPlayerRef = React.createRef();
-  }
-
-  setPlayPaused() {
-    let audioPlayer = this.audioPlayerRef.current;
-    if (audioPlayer != null && this.state.playing) {
-      audioPlayer.play().catch(e => {});
-    } else if (audioPlayer != null) {
-      audioPlayer.pause();
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    let audioPlayer = this.audioPlayerRef.current;
-    if (audioPlayer == null) { return; }
-
-    if (prevProps.track == null || this.props.track == null) {
-      this.audioPlayerRef.current.addEventListener("timeupdate", () => {
-        this.setState({currentTime: audioPlayer.currentTime});
-        this.setState({trackDuration: audioPlayer.duration});
-      });
-      return;
-    }
-
-    if (this.props.track.previewUrl !== prevProps.track.previewUrl) {
-      audioPlayer.load();
-      audioPlayer.onended = () => {
-        this.props.nextTrack(this.props.trackPointer)
-      };
-    }
-
-    this.setPlayPaused();
   }
 
   render() {
     let { track } = this.props;
     if (track == null) { return null; }
-    this.setPlayPaused();
 
     return (
       <div>
@@ -82,16 +45,10 @@ export class CurrentTrack extends React.Component {
           isPlaying={this.state.playing}
           {...track.album}
           />
-        <div>
-          { track.previewUrl == null &&
-            <div> No Preview Available </div>
-          }
-          <audio controls={false} ref={this.audioPlayerRef}>
-            <source type="audio/mpeg" src={track.previewUrl}/>
-            Audio tag not supported
-          </audio>
-          <span>{this.state.currentTime} / {this.state.trackDuration} </span>
-        </div>
+        <SongPlayer
+          playing={this.state.playing}
+          {...this.props}
+          />
         <div>
           <TrackDetails track={track} />
           <button onClick={(e) => this.props.previousTrack(this.props.trackPointer)}>
@@ -111,3 +68,72 @@ export class CurrentTrack extends React.Component {
     );
   }
 }
+
+
+
+export class SongPlayer extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.setPlayPaused = this.setPlayPaused.bind(this);
+    this.state = {
+      currentTime: 0,
+      trackDuration: 0,
+    };
+
+    this.audioPlayerRef = React.createRef();
+  }
+
+  componentDidMount() {
+    const audioPlayer = this.audioPlayerRef.current;
+    audioPlayer.addEventListener("timeupdate", () => {
+      this.setState({currentTime: audioPlayer.currentTime});
+      this.setState({trackDuration: audioPlayer.duration});
+    });
+    audioPlayer.onended = () => {
+      this.props.nextTrack(this.props.trackPointer);
+    };
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.track == null || this.props.track == null) {
+      return;
+    }
+
+    if (this.props.track.previewUrl !== prevProps.track.previewUrl) {
+      this.audioPlayerRef.current.load();
+    }
+
+    this.setPlayPaused();
+  }
+
+  setPlayPaused() {
+    let audioPlayer = this.audioPlayerRef.current;
+    if (this.props.playing) {
+      audioPlayer.play().catch(e => {});
+    } else if (audioPlayer != null) {
+      audioPlayer.pause();
+    }
+  }
+
+  render() {
+    let { track } = this.props;
+    this.setPlayPaused();
+
+    return (
+      <div>
+        { track.previewUrl == null &&
+          <div> No Preview Available </div>
+        }
+        <audio controls={false} ref={this.audioPlayerRef}>
+          <source type="audio/mpeg" src={track.previewUrl}/>
+          Audio tag not supported
+        </audio>
+        <span>
+          {this.state.currentTime} / {this.state.trackDuration}
+        </span>
+      </div>
+    );
+  }
+}
+
