@@ -1,6 +1,6 @@
 import React from 'react';
 
-const SongImage = ({images, name, isPlaying}) => {
+const SongImage = ({images, name, isPlaying, playPause}) => {
   let image = images.find(img => img.height > 200 && img.height < 400);
   if (image == null) { return null; }
 
@@ -8,7 +8,7 @@ const SongImage = ({images, name, isPlaying}) => {
   if (!isPlaying) { classNames += 'is-paused '; }
 
   return (
-    <div className={classNames}>
+    <div className={classNames} onClick={(e) => playPause()}>
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
         <defs>
           <mask id="CurrentTrack-albumMask">
@@ -40,9 +40,14 @@ export class CurrentTrack extends React.Component {
   constructor(props) {
     super(props);
 
+    this.playPause = this.playPause.bind(this);
     this.state = {
       playing: false,
     };
+  }
+
+  playPause() {
+    this.setState({playing: !this.state.playing});
   }
 
   render() {
@@ -53,6 +58,7 @@ export class CurrentTrack extends React.Component {
       <div>
         <SongImage
           isPlaying={this.state.playing}
+          playPause={this.playPause}
           {...track.album}
           />
         <SongPlayer
@@ -64,11 +70,8 @@ export class CurrentTrack extends React.Component {
           <button onClick={(e) => this.props.previousTrack(this.props.trackPointer)}>
             Previous
           </button>
-          <button onClick={(e) => this.setState({playing: true})}>
-            Play
-          </button>
-          <button onClick={(e) => this.setState({playing: false})}>
-            Pause
+          <button onClick={(e) => this.playPause()}>
+            Play/Pause
           </button>
           <button onClick={(e) => this.props.nextTrack(this.props.trackPointer)}>
             Next
@@ -78,8 +81,6 @@ export class CurrentTrack extends React.Component {
     );
   }
 }
-
-
 
 export class SongPlayer extends React.Component {
   constructor(props) {
