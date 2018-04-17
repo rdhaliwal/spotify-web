@@ -2,18 +2,8 @@ import React from 'react';
 import '../styles/App.css';
 import { connect } from 'react-redux'
 
-import {
-  fetchAllPlaylists,
-  setActivePlaylist,
-} from '../actions/playlists.js';
-
-import {
-  fetchTracksForPlaylist,
-  setActiveTrack,
-  nextTrack,
-  previousTrack,
-  togglePlaying,
-} from '../actions/tracks.js';
+import * as PLAYLIST_ACTIONS from '../actions/playlists.js';
+import * as TRACK_ACTIONS from '../actions/tracks.js';
 
 import { Playlist } from './Playlist.js';
 import { Tracklist } from './Tracklist.js';
@@ -102,13 +92,13 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchAllPlaylists: () => fetchAllPlaylists(dispatch),
-  fetchTracksForPlaylist: (playlist) => fetchTracksForPlaylist(dispatch, playlist),
-  setActivePlaylist: (playlist) => dispatch(setActivePlaylist(playlist)),
-  setActiveTrack: (pointer, playlist) => setActiveTrack(dispatch, pointer, playlist),
-  nextTrack: (trackPointer, playlist) => nextTrack(dispatch, trackPointer, playlist),
-  previousTrack: (trackPointer, playlist) => previousTrack(dispatch, trackPointer, playlist),
-  togglePlaying: (playing) => togglePlaying(dispatch, playing),
+  fetchAllPlaylists: () => PLAYLIST_ACTIONS.fetchAllPlaylists(dispatch),
+  setActivePlaylist: (playlist) => PLAYLIST_ACTIONS.setActivePlaylist(dispatch, playlist),
+  fetchTracksForPlaylist: (playlist) => TRACK_ACTIONS.fetchTracksForPlaylist(dispatch, playlist),
+  setActiveTrack: (pointer, playlist) => TRACK_ACTIONS.setActiveTrack(dispatch, pointer, playlist),
+  nextTrack: (trackPointer, playlist) => TRACK_ACTIONS.nextTrack(dispatch, trackPointer, playlist),
+  previousTrack: (trackPointer, playlist) => TRACK_ACTIONS.previousTrack(dispatch, trackPointer, playlist),
+  togglePlaying: (playing) => TRACK_ACTIONS.togglePlaying(dispatch, playing),
 });
 
 export default connect(
