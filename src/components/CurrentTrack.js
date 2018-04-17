@@ -1,17 +1,17 @@
 import React from 'react';
 
-const SongImage = ({images, name, isPlaying, togglePlaying}) => {
+const TrackPlayerAlbumArt = ({images, name, isPlaying, togglePlaying}) => {
   let image = images.find(img => img.height > 200 && img.height < 400);
   if (image == null) { return null; }
 
-  let classNames = 'CurrentTrack-albumArt ';
+  let classNames = 'TrackPlayer-albumArt ';
   if (!isPlaying) { classNames += 'is-paused '; }
 
   return (
     <div className={classNames} onClick={(e) => togglePlaying(isPlaying)}>
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
         <defs>
-          <mask id="CurrentTrack-albumMask">
+          <mask id="TrackPlayer-albumMask">
             <circle id="outer" cx="50" cy="50" r="50" fill="white"></circle>
             <circle id="inner" cx="50" cy="50" r="10" fill="black"></circle>
           </mask>
@@ -19,7 +19,7 @@ const SongImage = ({images, name, isPlaying, togglePlaying}) => {
         <image
           width="100%"
           height="100%"
-          mask="url(#CurrentTrack-albumMask)"
+          mask="url(#TrackPlayer-albumMask)"
           xlinkHref={image.url}>
         </image>
       </svg>
@@ -27,7 +27,7 @@ const SongImage = ({images, name, isPlaying, togglePlaying}) => {
   );
 };
 
-const TrackDetails = ({track}) => {
+const TrackPlayerDetails = ({track}) => {
   return (
     <div>
       <p>{track.name}</p>
@@ -36,22 +36,22 @@ const TrackDetails = ({track}) => {
   );
 };
 
-export const CurrentTrack = (props) => {
+export const TrackPlayer = (props) => {
   if (props.track == null) { return null; }
 
   return (
     <div>
-      <SongImage
+      <TrackPlayerAlbumArt
         isPlaying={props.playState.playing}
         togglePlaying={props.togglePlaying}
         {...props.track.album}
         />
-      <SongPlayer
+      <TrackPlayerAudio
         playing={props.playState.playing}
         {...props}
         />
       <div>
-        <TrackDetails track={props.track} />
+        <TrackPlayerDetails track={props.track} />
         <button onClick={(e) => props.previousTrack(props.trackPointer, props.playlist)}>
           Previous
         </button>
@@ -66,11 +66,11 @@ export const CurrentTrack = (props) => {
   );
 };
 
-export class SongPlayer extends React.Component {
+export class TrackPlayerAudio extends React.Component {
   constructor(props) {
     super(props);
 
-    this.clickPetPlayPaused = this.clickPetPlayPaused.bind(this);
+    this.setPlayOrPaused = this.setPlayOrPaused.bind(this);
     this.state = {
       currentTime: 0,
       trackDuration: 0,
@@ -104,10 +104,10 @@ export class SongPlayer extends React.Component {
       // }, 3000);
     }
 
-    this.clickPetPlayPaused();
+    this.setPlayOrPaused();
   }
 
-  clickPetPlayPaused() {
+  setPlayOrPaused() {
     let audioPlayer = this.audioPlayerRef.current;
     if (this.props.playing) {
       audioPlayer.play().catch(e => {});
@@ -118,7 +118,7 @@ export class SongPlayer extends React.Component {
 
   render() {
     let { track } = this.props;
-    this.clickPetPlayPaused();
+    this.setPlayOrPaused();
 
     return (
       <div>

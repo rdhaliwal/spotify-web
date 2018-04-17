@@ -54,18 +54,18 @@
   width: calc(100% + 50px);
   height: calc(100% + 50px);
   z-index: 0;
-  filter: blur(50px) opacity(50%) saturate(150%) contrast(125%);
+  filter: blur(50px) opacity(50%) saturate(125%) contrast(125%);
   object-fit: cover;
 }
 
-.CurrentTrack-albumArt {
+.TrackPlayer-albumArt {
   width: 250px;
   height: 250px;
   animation: spin 45s linear infinite;
   margin: 20px auto;
 }
 
-.CurrentTrack-albumArt.is-paused {
+.TrackPlayer-albumArt.is-paused {
   animation-play-state: paused;
 }
 
