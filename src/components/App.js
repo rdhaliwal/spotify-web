@@ -17,7 +17,7 @@ import {
 
 import { Playlist } from './Playlist.js';
 import { Tracklist } from './Tracklist.js';
-import { TrackPlayer } from './CurrentTrack.js';
+import { TrackPlayer } from './TrackPlayer.js';
 
 class App extends React.Component {
   componentDidMount() {
