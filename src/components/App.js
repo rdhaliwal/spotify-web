@@ -45,6 +45,7 @@ class App extends React.Component {
             <CurrentTrack
               track={activeTrack}
               trackPointer={activeTrackPointer}
+              playlist={activePlaylist}
               nextTrack={this.props.nextTrack}
               previousTrack={this.props.previousTrack}
               />
@@ -101,9 +102,9 @@ const mapDispatchToProps = (dispatch) => ({
   fetchAllPlaylists: () => fetchAllPlaylists(dispatch),
   fetchTracksForPlaylist: (playlist) => fetchTracksForPlaylist(dispatch, playlist),
   setActivePlaylist: (playlist) => dispatch(setActivePlaylist(playlist)),
-  setActiveTrack: (pointer) => setActiveTrack(dispatch, pointer),
-  nextTrack: (trackPointer) => nextTrack(dispatch, trackPointer),
-  previousTrack: (trackPointer) => previousTrack(dispatch, trackPointer),
+  setActiveTrack: (pointer, playlist) => setActiveTrack(dispatch, pointer, playlist),
+  nextTrack: (trackPointer, playlist) => nextTrack(dispatch, trackPointer, playlist),
+  previousTrack: (trackPointer, playlist) => previousTrack(dispatch, trackPointer, playlist),
 });
 
 export default connect(

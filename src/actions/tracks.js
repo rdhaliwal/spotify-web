@@ -26,19 +26,22 @@ export const fetchTracksForPlaylist = (dispatch, playlist) => {
   } // else tracks are already loaded, no need to refetch.
 };
 
-export const setActiveTrack = (dispatch, pointer) => {
-  // TODO-RD: Send playlist, validate pointer is in the playlist.
-  dispatch({
-    type: ACTION.SET_ACTIVE_TRACK,
-    trackPointer: pointer,
-  });
+export const setActiveTrack = (dispatch, pointer, playlist) => {
+  if (pointer >= 0 && pointer < playlist.tracks.length) {
+    dispatch({
+      type: ACTION.SET_ACTIVE_TRACK,
+      trackPointer: pointer,
+    });
+  } else {
+    console.warn('Out of bounds, fool!');
+  }
 };
 
-export const nextTrack = (dispatch, trackPointer) => {
-  setActiveTrack(dispatch, trackPointer + 1);
+export const nextTrack = (dispatch, trackPointer, playlist) => {
+  setActiveTrack(dispatch, trackPointer + 1, playlist);
 };
 
-export const previousTrack = (dispatch, trackPointer) => {
-  setActiveTrack(dispatch, trackPointer - 1);
+export const previousTrack = (dispatch, trackPointer, playlist) => {
+  setActiveTrack(dispatch, trackPointer - 1, playlist);
 };
 

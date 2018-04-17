@@ -67,13 +67,13 @@ export class CurrentTrack extends React.Component {
           />
         <div>
           <TrackDetails track={track} />
-          <button onClick={(e) => this.props.previousTrack(this.props.trackPointer)}>
+          <button onClick={(e) => this.props.previousTrack(this.props.trackPointer, this.props.playlist)}>
             Previous
           </button>
           <button onClick={(e) => this.playPause()}>
             Play/Pause
           </button>
-          <button onClick={(e) => this.props.nextTrack(this.props.trackPointer)}>
+          <button onClick={(e) => this.props.nextTrack(this.props.trackPointer, this.props.playlist)}>
             Next
           </button>
         </div>
@@ -102,7 +102,7 @@ export class SongPlayer extends React.Component {
       this.setState({trackDuration: audioPlayer.duration});
     });
     audioPlayer.onended = () => {
-      this.props.nextTrack(this.props.trackPointer);
+      this.props.nextTrack(this.props.trackPointer, this.props.playlist);
     };
   }
 
@@ -113,6 +113,10 @@ export class SongPlayer extends React.Component {
 
     if (this.props.track.previewUrl !== prevProps.track.previewUrl) {
       this.audioPlayerRef.current.load();
+    } else if (this.props.track.previewUrl == null) {
+      // setTimeout(() => {
+      //   this.props.nextTrack(this.props.trackPointer, this.props.playlist);
+      // }, 3000);
     }
 
     this.setPlayPaused();
@@ -133,16 +137,18 @@ export class SongPlayer extends React.Component {
 
     return (
       <div>
-        { track.previewUrl == null &&
-          <div> No Preview Available </div>
-        }
         <audio controls={false} ref={this.audioPlayerRef}>
           <source type="audio/mpeg" src={track.previewUrl}/>
           Audio tag not supported
         </audio>
-        <span>
-          {this.state.currentTime} / {this.state.trackDuration}
-        </span>
+        { track.previewUrl != null &&
+          <span>
+            {this.state.currentTime} / {this.state.trackDuration}
+          </span>
+        }
+        { track.previewUrl == null &&
+          <span> No Preview Available, skipping soon.</span>
+        }
       </div>
     );
   }
