@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
 import { playlists } from './playlists.js';
-import { tracks } from './tracks.js';
+import { playState } from './playState.js';
 
 export default combineReducers({
   playlists,
-  tracks,
+  playState,
 })

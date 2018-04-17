@@ -54,7 +54,7 @@
   width: calc(100% + 50px);
   height: calc(100% + 50px);
   z-index: 0;
-  filter: blur(50px) opacity(50%);
+  filter: blur(50px) opacity(50%) saturate(150%) contrast(125%);
   object-fit: cover;
 }
 

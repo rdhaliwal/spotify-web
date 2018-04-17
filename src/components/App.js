@@ -12,6 +12,7 @@ import {
   setActiveTrack,
   nextTrack,
   previousTrack,
+  togglePlaying,
 } from '../actions/tracks.js';
 
 import { Playlist } from './Playlist.js';
@@ -48,6 +49,8 @@ class App extends React.Component {
               playlist={activePlaylist}
               nextTrack={this.props.nextTrack}
               previousTrack={this.props.previousTrack}
+              playState={this.props.playState}
+              togglePlaying={this.props.togglePlaying}
               />
           </div>
           <div className="App-playlistTrackContainer">
@@ -94,8 +97,8 @@ const BackgroundAlbum = ({track}) => {
 };
 
 const mapStateToProps = (state) => ({
-  // tracks: state.tracks,
   playlists: state.playlists,
+  playState: state.playState,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -105,6 +108,7 @@ const mapDispatchToProps = (dispatch) => ({
   setActiveTrack: (pointer, playlist) => setActiveTrack(dispatch, pointer, playlist),
   nextTrack: (trackPointer, playlist) => nextTrack(dispatch, trackPointer, playlist),
   previousTrack: (trackPointer, playlist) => previousTrack(dispatch, trackPointer, playlist),
+  togglePlaying: (playing) => togglePlaying(dispatch, playing),
 });
 
 export default connect(

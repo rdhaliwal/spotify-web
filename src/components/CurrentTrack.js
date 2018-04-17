@@ -1,6 +1,6 @@
 import React from 'react';
 
-const SongImage = ({images, name, isPlaying, playPause}) => {
+const SongImage = ({images, name, isPlaying, togglePlaying}) => {
   let image = images.find(img => img.height > 200 && img.height < 400);
   if (image == null) { return null; }
 
@@ -8,7 +8,7 @@ const SongImage = ({images, name, isPlaying, playPause}) => {
   if (!isPlaying) { classNames += 'is-paused '; }
 
   return (
-    <div className={classNames} onClick={(e) => playPause()}>
+    <div className={classNames} onClick={(e) => togglePlaying(isPlaying)}>
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
         <defs>
           <mask id="CurrentTrack-albumMask">
@@ -36,57 +36,41 @@ const TrackDetails = ({track}) => {
   );
 };
 
-export class CurrentTrack extends React.Component {
-  constructor(props) {
-    super(props);
+export const CurrentTrack = (props) => {
+  if (props.track == null) { return null; }
 
-    this.playPause = this.playPause.bind(this);
-    this.state = {
-      playing: false,
-    };
-  }
-
-  playPause() {
-    this.setState({playing: !this.state.playing});
-  }
-
-  render() {
-    let { track } = this.props;
-    if (track == null) { return null; }
-
-    return (
+  return (
+    <div>
+      <SongImage
+        isPlaying={props.playState.playing}
+        togglePlaying={props.togglePlaying}
+        {...props.track.album}
+        />
+      <SongPlayer
+        playing={props.playState.playing}
+        {...props}
+        />
       <div>
-        <SongImage
-          isPlaying={this.state.playing}
-          playPause={this.playPause}
-          {...track.album}
-          />
-        <SongPlayer
-          playing={this.state.playing}
-          {...this.props}
-          />
-        <div>
-          <TrackDetails track={track} />
-          <button onClick={(e) => this.props.previousTrack(this.props.trackPointer, this.props.playlist)}>
-            Previous
-          </button>
-          <button onClick={(e) => this.playPause()}>
-            Play/Pause
-          </button>
-          <button onClick={(e) => this.props.nextTrack(this.props.trackPointer, this.props.playlist)}>
-            Next
-          </button>
-        </div>
+        <TrackDetails track={props.track} />
+        <button onClick={(e) => props.previousTrack(props.trackPointer, props.playlist)}>
+          Previous
+        </button>
+        <button onClick={(e) => props.togglePlaying(props.playState.playing)}>
+          Play/Pause
+        </button>
+        <button onClick={(e) => props.nextTrack(props.trackPointer, props.playlist)}>
+          Next
+        </button>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 export class SongPlayer extends React.Component {
   constructor(props) {
     super(props);
 
-    this.setPlayPaused = this.setPlayPaused.bind(this);
+    this.clickPetPlayPaused = this.clickPetPlayPaused.bind(this);
     this.state = {
       currentTime: 0,
       trackDuration: 0,
@@ -113,16 +97,17 @@ export class SongPlayer extends React.Component {
 
     if (this.props.track.previewUrl !== prevProps.track.previewUrl) {
       this.audioPlayerRef.current.load();
-    } else if (this.props.track.previewUrl == null) {
+    } else if (this.props.track.previewUrl == null && this.props.trackPointer !== this.props.playlist.tracks.length-1) {
+      // Need to rethink, redo, and fix this 'timeout' thing for empty songs
       // setTimeout(() => {
       //   this.props.nextTrack(this.props.trackPointer, this.props.playlist);
       // }, 3000);
     }
 
-    this.setPlayPaused();
+    this.clickPetPlayPaused();
   }
 
-  setPlayPaused() {
+  clickPetPlayPaused() {
     let audioPlayer = this.audioPlayerRef.current;
     if (this.props.playing) {
       audioPlayer.play().catch(e => {});
@@ -133,7 +118,7 @@ export class SongPlayer extends React.Component {
 
   render() {
     let { track } = this.props;
-    this.setPlayPaused();
+    this.clickPetPlayPaused();
 
     return (
       <div>
@@ -147,7 +132,7 @@ export class SongPlayer extends React.Component {
           </span>
         }
         { track.previewUrl == null &&
-          <span> No Preview Available, skipping soon.</span>
+          <span> No Preview Available.</span>
         }
       </div>
     );

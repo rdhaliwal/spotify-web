@@ -45,3 +45,9 @@ export const previousTrack = (dispatch, trackPointer, playlist) => {
   setActiveTrack(dispatch, trackPointer - 1, playlist);
 };
 
+export const togglePlaying = (dispatch, playing) => {
+  dispatch({
+    type: ACTION.UPDATE_PLAYING_STATE,
+    playing: !playing,
+  });
+};
